@@ -9,6 +9,8 @@ public class MealTo {
 
     private final int calories;
 
+    private final String id;
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -25,13 +27,18 @@ public class MealTo {
         return excess;
     }
 
+    public String getId() {
+        return id;
+    }
+
     private final boolean excess;
 
-    public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess) {
+    public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess, String id) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
+        this.id = id;
     }
 
     @Override

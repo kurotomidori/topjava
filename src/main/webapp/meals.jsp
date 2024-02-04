@@ -24,8 +24,8 @@
                 <td><%=mealTo.getDateTime().format(TimeUtil.DTF)%></td>
                 <td>${mealTo.description}</td>
                 <td>${mealTo.calories}</td>
-                <td><a href="meals?action=edit">Update</a></td>
-                <td><a href="meals?action=delete">Delete</a></td>
+                <td><a href="meals?id=${mealTo.id}&action=edit">Update</a></td>
+                <td><a href="meals?id=${mealTo.id}&action=delete">Delete</a></td>
             </tr>
         </c:forEach>
     </table>
