@@ -21,11 +21,11 @@
         <c:forEach items="${meals}" var="mealTo">
             <jsp:useBean id="mealTo" type="ru.javawebinar.topjava.model.MealTo"/>
             <tr style="color: ${mealTo.excess ? "red" : "green"};" >
-                <td><%=mealTo.getDateTime().format(TimeUtil.DTF)%></td>
+                <td>${mealTo.dateTime.format(TimeUtil.DATE_TIME_FORMATTER)}</td>
                 <td>${mealTo.description}</td>
                 <td>${mealTo.calories}</td>
-                <td><a href="meals?id=${mealTo.id}&action=edit">Update</a></td>
-                <td><a href="meals?id=${mealTo.id}&action=delete">Delete</a></td>
+                <td><a href="meals?id=${mealTo.id.intValue()}&action=edit">Update</a></td>
+                <td><a href="meals?id=${mealTo.id.intValue()}&action=delete">Delete</a></td>
             </tr>
         </c:forEach>
     </table>
