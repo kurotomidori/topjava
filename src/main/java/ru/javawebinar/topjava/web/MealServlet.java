@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MealMemoryStorage;
+import ru.javawebinar.topjava.storage.MemoryMealStorage;
 import ru.javawebinar.topjava.storage.Storage;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -15,13 +15,13 @@ import java.time.LocalTime;
 
 public class MealServlet extends HttpServlet {
 
-    private Storage<Meal> storage;
-
     private static final Meal EMPTY = new Meal();
+
+    private Storage<Meal> storage;
 
     @Override
     public void init() {
-        storage = new MealMemoryStorage();
+        storage = new MemoryMealStorage();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MealServlet extends HttpServlet {
                 return;
         }
         request.setAttribute("meal", meal);
-        request.getRequestDispatcher("/edit.jsp").forward(request, response);
+        request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
     }
 
     @Override

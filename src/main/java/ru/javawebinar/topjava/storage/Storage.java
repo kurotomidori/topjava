@@ -6,11 +6,11 @@ public interface Storage<T> {
 
     T add(T element);
 
-    void delete(Integer id);
+    void delete(int id);
 
     T update(T element);
 
-    T get(Integer id);
+    T get(int id);
 
     List<T> getAll();
 }

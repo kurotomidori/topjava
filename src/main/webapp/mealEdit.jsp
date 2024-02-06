@@ -7,10 +7,10 @@
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
-<h1>Edit Meal</h1>
+<h1>${meal.id != null ? "Edit Meal" : "Add Meal"}</h1>
 <section>
     <form method="post" action="meals">
-        <input type="hidden" name="id" value="${meal.id.intValue()}">
+        <input type="hidden" name="id" value="${meal.id}">
         <div>
             <h4>DateTime:</h4>
             <input type="datetime-local" name="date" value="${meal.dateTime}"/>

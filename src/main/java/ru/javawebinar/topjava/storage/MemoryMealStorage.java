@@ -7,43 +7,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealMemoryStorage implements Storage<Meal> {
+public class MemoryMealStorage implements Storage<Meal> {
 
     private final ConcurrentMap<Integer, Meal> storage = new ConcurrentHashMap<>();
 
-    private Integer counter = 0;
+    private AtomicInteger counter = new AtomicInteger();
 
-    public MealMemoryStorage() {
+    public MemoryMealStorage() {
         for (Meal m : MealsUtil.meals) {
             this.add(m);
         }
     }
 
     @Override
-    public synchronized Meal add(Meal m) {
-        m.setId(counter++);
+    public Meal add(Meal m) {
+        m.setId(counter.incrementAndGet());
         storage.put(m.getId(), m);
         return m;
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(int id) {
         storage.remove(id);
     }
 
     @Override
     public Meal update(Meal m) {
-        if (storage.containsKey(m.getId())) {
-            storage.put(m.getId(), m);
-            return m;
-        } else {
-            return null;
-        }
+        return storage.computeIfPresent(m.getId(), (key, oldValue) -> m);
     }
 
     @Override
-    public Meal get(Integer id) {
+    public Meal get(int id) {
         return storage.get(id);
     }
 
