@@ -16,6 +16,4 @@ public class SecurityUtil {
     public static int authUserCaloriesPerDay() {
         return DEFAULT_CALORIES_PER_DAY;
     }
-
-
 }

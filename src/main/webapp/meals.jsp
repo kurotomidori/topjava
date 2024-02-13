@@ -23,19 +23,19 @@
     <form method="get" action="meals">
         <dl>
             <dt>Starting date (including)</dt>
-            <dt><input type="date" name="startDate"></dt>
+            <dt><input type="date" name="startDate" value="${param.startDate}"></dt>
         </dl>
         <dl>
             <dt>Ending date (including)</dt>
-            <dt><input type="date" name="endDate"></dt>
+            <dt><input type="date" name="endDate" value="${param.endDate}"></dt>
         </dl>
         <dl>
             <dt>Starting time (including)</dt>
-            <dt><input type="time" name="startTime"></dt>
+            <dt><input type="time" name="startTime" value="${param.startTime}"></dt>
         </dl>
         <dl>
             <dt>Ending time (excluding)</dt>
-            <dt><input type="time" name="endTime"></dt>
+            <dt><input type="time" name="endTime" value="${param.endTime}"></dt>
             <button type="submit">Filter</button>
         </dl>
     </form>
