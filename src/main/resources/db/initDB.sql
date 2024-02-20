@@ -31,7 +31,7 @@ CREATE TABLE meals
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
     description VARCHAR   NOT NULL,
     calories    INTEGER   NOT NULL,
-    date_time   TIMESTAMPTZ NOT NULL,
+    date_time   TIMESTAMP NOT NULL,
     CONSTRAINT user_meals_date_time UNIQUE (user_id, date_time),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
