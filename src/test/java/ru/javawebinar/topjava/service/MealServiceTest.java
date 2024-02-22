@@ -18,6 +18,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -58,7 +60,8 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenInclusive() {
-        List<Meal> meals = service.getBetweenInclusive(LocalDate.parse("2004-11-01"), LocalDate.parse("2005-09-01"),USER_ID);
+        List<Meal> meals = service.getBetweenInclusive(LocalDate.of(2004, 11, 1),
+                LocalDate.of(2005, 9, 1), USER_ID);
         assertMatch(meals, userMeal5, userMeal4, userMeal3);
     }
 
@@ -72,7 +75,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdate();
         service.update(updated, USER_ID);
-        assertMatch(service.get(USER_MEAL1_ID, USER_ID), updated);
+        assertMatch(service.get(USER_MEAL1_ID, USER_ID), getUpdate());
     }
 
     @Test
@@ -82,9 +85,9 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal newMeal = MealTestData.getNew();
-        Meal created = service.create(newMeal, USER_ID);
+        Meal created = service.create(getNew(), USER_ID);
         Integer newId = created.getId();
+        Meal newMeal = getNew();
         newMeal.setId(newId);
         assertMatch(created, newMeal);
         assertMatch(service.get(newId, USER_ID), newMeal);
