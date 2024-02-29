@@ -50,6 +50,11 @@ public class MealServiceTest {
         }
     };
 
+    @AfterClass
+    public static void afterClass() throws Exception {
+        logger.info(finalLog.toString());
+    }
+
     @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
@@ -127,10 +132,5 @@ public class MealServiceTest {
     @Test
     public void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        logger.info(finalLog.toString());
     }
 }
