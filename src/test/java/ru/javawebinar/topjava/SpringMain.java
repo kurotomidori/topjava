@@ -16,7 +16,7 @@ import java.util.List;
 public class SpringMain {
     public static void main(String[] args) {
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext(new String[]{"spring/spring-app.xml", "spring/spring-db.xml"}, false)) {
-            appCtx.getEnvironment().setActiveProfiles("postgres", "jpa");
+            appCtx.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
             appCtx.refresh();
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));

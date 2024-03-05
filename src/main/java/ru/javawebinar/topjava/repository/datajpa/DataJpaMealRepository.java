@@ -1,12 +1,10 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,17 +13,18 @@ public class DataJpaMealRepository implements MealRepository {
 
     private final CrudMealRepository crudRepository;
 
-    @PersistenceContext
-    private EntityManager em;
+    private final CrudUserRepository crudUserRepository;
 
-    public DataJpaMealRepository(CrudMealRepository crudRepository) {
+    public DataJpaMealRepository(CrudMealRepository crudRepository, CrudUserRepository crudUserRepository) {
         this.crudRepository = crudRepository;
+        this.crudUserRepository = crudUserRepository;
     }
 
     @Override
+    @Transactional
     public Meal save(Meal meal, int userId) {
         if (meal.isNew() || get(meal.id(), userId) != null) {
-            meal.setUser(em.getReference(User.class, userId));
+            meal.setUser(crudUserRepository.getReferenceById(userId));
             return crudRepository.save(meal);
         }
         return null;
@@ -38,7 +37,13 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        return crudRepository.get(id, userId);
+        Meal meal = crudRepository.findById(id).orElse(null);
+        return meal != null && meal.getUser().getId() == userId ? meal : null;
+    }
+
+    @Override
+    public Meal getWithUser(int id, int userId) {
+        return crudRepository.getWithUser(id, userId);
     }
 
     @Override
