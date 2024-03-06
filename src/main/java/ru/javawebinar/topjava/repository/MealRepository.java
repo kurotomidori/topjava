@@ -16,7 +16,7 @@ public interface MealRepository {
     Meal get(int id, int userId);
 
     default Meal getWithUser(int id, int userId) {
-        return get(id, userId);
+        throw new UnsupportedOperationException();
     }
 
     // ORDERED dateTime desc
