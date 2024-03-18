@@ -1,13 +1,14 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
-import ru.javawebinar.topjava.web.meal.AbstractMealController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -20,27 +21,28 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
+@RequestMapping("/meals")
 public class JspMealController extends AbstractMealController {
     public JspMealController(MealService service) {
-        super(service);
+        super(service, LoggerFactory.getLogger(JspMealController.class));
     }
 
-    @GetMapping("/meals")
+    @GetMapping
     public String getMeals(Model model) {
         log.info("meals");
         model.addAttribute("meals", getAll());
         return "meals";
     }
 
-    @GetMapping(path = "/meals", params = "action=delete")
+    @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
         log.info("delete meal");
         int mealId = getId(request);
         delete(mealId);
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
-    @GetMapping(path = "/meals", params = "action=create")
+    @GetMapping("/create")
     public String create(Model model) {
         log.info("create meal");
         final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
@@ -48,7 +50,7 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @GetMapping(path = "/meals", params = "action=update")
+    @GetMapping("/update")
     public String update(Model model, HttpServletRequest request) {
         log.info("update meal");
         int mealId = getId(request);
@@ -57,7 +59,7 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @GetMapping(path = "/meals", params = "action=filter")
+    @GetMapping("/filter")
     public String filter(Model model, HttpServletRequest request) {
         log.info("filter meal");
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
@@ -68,7 +70,7 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @PostMapping("/meals")
+    @PostMapping("/save")
     public String save(HttpServletRequest request) {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
@@ -80,7 +82,7 @@ public class JspMealController extends AbstractMealController {
         } else {
             create(meal);
         }
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
     private int getId(HttpServletRequest request) {
