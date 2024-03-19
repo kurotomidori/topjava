@@ -27,14 +27,12 @@ public class JdbcUserRepository implements UserRepository {
 
     private static final ResultSetExtractor<List<User>> RESULT_SET_EXTRACTOR = rs -> {
         Map<Integer, User> userMap = new LinkedHashMap<>();
-        User user;
         Set<Role> roles = EnumSet.noneOf(Role.class);
         int rowCounter = 0;
         while (rs.next()) {
             int userId = rs.getInt("id");
             if (!userMap.containsKey(userId)) {
-                user = ROW_MAPPER.mapRow(rs, rowCounter);
-                rowCounter++;
+                User user = ROW_MAPPER.mapRow(rs, rowCounter);
                 user.setRoles(roles);
                 roles = EnumSet.noneOf(Role.class);
                 userMap.put(userId, user);
@@ -43,6 +41,7 @@ public class JdbcUserRepository implements UserRepository {
             if (roleName != null) {
                 userMap.get(userId).getRoles().add(Role.valueOf(rs.getString("role")));
             }
+            rowCounter++;
         }
         return new ArrayList<>(userMap.values());
     };

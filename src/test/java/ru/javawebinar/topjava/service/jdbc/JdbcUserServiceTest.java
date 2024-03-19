@@ -8,6 +8,5 @@ import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 import static ru.javawebinar.topjava.Profiles.JDBC;
 
 @ActiveProfiles(JDBC)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JdbcUserServiceTest extends AbstractUserServiceTest {
 }

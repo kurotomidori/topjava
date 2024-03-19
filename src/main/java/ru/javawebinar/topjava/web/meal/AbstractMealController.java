@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web.meal;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -20,9 +21,9 @@ public abstract class AbstractMealController {
 
     private final MealService service;
 
-    protected AbstractMealController(MealService service, Logger log) {
+    protected AbstractMealController(MealService service) {
         this.service = service;
-        this.log = log;
+        this.log = LoggerFactory.getLogger(this.getClass());
     }
 
     public Meal get(int id) {
