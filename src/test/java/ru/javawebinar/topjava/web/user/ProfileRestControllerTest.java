@@ -1,9 +1,12 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
@@ -12,6 +15,7 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.web.user.ProfileRestController.REST_URL;
 
@@ -29,6 +33,19 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getWithMeals() throws Exception {
+        Assumptions.assumeTrue(isProfileDataJpa());
+        ResultActions action = perform(MockMvcRequestBuilders.get(REST_URL + "/with-meals"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        User userWithMeals = USER_MATCHER.readFromJson(action);
+        USER_MATCHER.assertMatch(userWithMeals, user);
+        MEAL_MATCHER.assertMatch(userWithMeals.getMeals(), meals);
+    }
+
+    @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL))
                 .andExpect(status().isNoContent());
@@ -37,7 +54,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        User updated = getUpdated();
+        User updated = UserTestData.getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
