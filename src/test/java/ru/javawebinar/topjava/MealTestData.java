@@ -2,6 +2,7 @@ package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
@@ -30,9 +31,9 @@ public class MealTestData {
     public static final Meal adminMeal2 = new Meal(ADMIN_MEAL_ID + 1, of(2020, Month.JANUARY, 31, 21, 0), "Админ ужин", 1500);
 
 
-    public static final MealTo meal2To = new MealTo(meal2.getId(), meal2.getDateTime(), meal2.getDescription(), meal2.getCalories(), false);
-    public static final MealTo meal3To = new MealTo(meal3.getId(), meal3.getDateTime(), meal3.getDescription(), meal3.getCalories(), false);
-    public static final MealTo meal7To = new MealTo(meal7.getId(), meal7.getDateTime(), meal7.getDescription(), meal7.getCalories(), true);
+    public static final MealTo meal2To = MealsUtil.createTo(meal2, false);
+    public static final MealTo meal3To = MealsUtil.createTo(meal3, false);
+    public static final MealTo meal7To = MealsUtil.createTo(meal7, true);
 
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
 
