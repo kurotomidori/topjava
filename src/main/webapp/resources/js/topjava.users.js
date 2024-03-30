@@ -45,3 +45,19 @@ $(function () {
         })
     );
 });
+
+function updateTable() {
+    $.get(ctx.ajaxUrl, function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
+function setActiveStatus(id) {
+    $.ajax({
+        type: "POST",
+        url: ctx.ajaxUrl + "enabled",
+        data: {"id": id, "status": $('#enabled_' + id)[0].checked}
+    }).done(function () {
+        updateTable()
+    });
+}
