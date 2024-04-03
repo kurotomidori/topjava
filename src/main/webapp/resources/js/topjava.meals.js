@@ -30,12 +30,7 @@ $(function () {
                     "orderable": false
                 }
             ],
-            "order": [
-                [
-                    0,
-                    "asc"
-                ]
-            ]
+            "order": []
         })
     );
 });
@@ -60,11 +55,11 @@ function updateTable() {
             type: "GET",
             data: $('#filterForm').serialize()
         }).done(function (data) {
-            ctx.datatableApi.clear().rows.add(data).draw();
+            redrawDataTable(data);
         });
     } else {
         $.get(ctx.ajaxUrl, function (data) {
-            ctx.datatableApi.clear().rows.add(data).draw();
+            redrawDataTable(data);
         });
     }
 }

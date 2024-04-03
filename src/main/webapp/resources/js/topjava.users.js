@@ -48,16 +48,18 @@ $(function () {
 
 function updateTable() {
     $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        redrawDataTable(data);
     });
 }
 
 function setActiveStatus(id) {
+    let status = $('#enabled_' + id)[0].checked;
     $.ajax({
         type: "POST",
-        url: ctx.ajaxUrl + "enabled",
-        data: {"id": id, "status": $('#enabled_' + id)[0].checked}
+        url: ctx.ajaxUrl + id,
+        data: {"id": id, "status": status}
     }).done(function () {
-        updateTable()
+        successNoty(status ? "Enabled user" : "Disabled user");
+        $('#' + id).attr("is-enabled", status);
     });
 }
