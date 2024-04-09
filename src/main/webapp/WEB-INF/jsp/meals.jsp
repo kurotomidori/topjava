@@ -8,7 +8,6 @@
 <script type="text/javascript" src="resources/js/topjava.common.js" defer></script>
 <script type="text/javascript" src="resources/js/topjava.meals.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
-
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
@@ -70,7 +69,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalTitle"><spring:message code="meal.add"/></h4>
+                <h4 class="modal-title" id="modalTitle"></h4>
                 <button type="button" class="close" data-dismiss="modal" onclick="closeNoty()">&times;</button>
             </div>
             <div class="modal-body">
@@ -111,23 +110,12 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
+<jsp:include page="fragments/i18n.jsp">
+    <jsp:param name="addEntity" value="meal.add"/>
+    <jsp:param name="editEntity" value="meal.edit"/>
+</jsp:include>
 <link rel="stylesheet" type="text/css" href="webjars/datetimepicker/2.5.20-1/jquery.datetimepicker.css"/>
 <script src="webjars/datetimepicker/2.5.20-1/jquery.js"></script>
 <script src="webjars/datetimepicker/2.5.20-1/build/jquery.datetimepicker.full.min.js"></script>
-<script type="text/javascript">
-    $.datetimepicker.setLocale(window.navigator.language);
-
-    $('#dateTime').datetimepicker({format: 'Y-m-d H:i'});
-
-    $('#startDate').datetimepicker({timepicker: false, format: 'Y-m-d'});
-    $('#endDate').datetimepicker({timepicker: false, format: 'Y-m-d'});
-
-    $('#startTime').datetimepicker({datepicker: false, format: 'H:i'});
-    $('#endTime').datetimepicker({datepicker: false, format: 'H:i'});
-
-    const i18n = {}; // https://learn.javascript.ru/object
-    i18n["addTitle"] = '<spring:message code="meal.add"/>';
-    i18n["editTitle"] = '<spring:message code="meal.edit"/>';
-</script>
-<jsp:include page="fragments/internationalizeScript.jsp"/>
+<script src="resources/js/topjava.datetimepicker.js"></script>
 </html>

@@ -17,10 +17,18 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
-function serializeForm (form) {
-    form[0][1].value = form[0][1].value.replace(" ", "T");
-    return form.serialize();
-}
+$.ajaxSetup({
+    converters: {
+        "text json": function (result) {
+            return JSON.parse(result, (key, value) => {
+                if(key === "dateTime") {
+                    return value.substring(0, 16).replace("T", " ");
+                }
+                return value;
+            });
+        }
+    }
+});
 
 $(function () {
     makeEditable(
@@ -33,13 +41,7 @@ $(function () {
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime",
-                    "render": function (data, type, row) {
-                        if (type === "display") {
-                            return data.replace("T", " ");
-                        }
-                        return data;
-                    }
+                    "data": "dateTime"
                 },
                 {
                     "data": "description"

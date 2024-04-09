@@ -23,10 +23,6 @@ function enable(chkbox, id) {
     });
 }
 
-function serializeForm (form) {
-    return form.serialize();
-}
-
 // $(document).ready(function () {
 $(function () {
     makeEditable(
