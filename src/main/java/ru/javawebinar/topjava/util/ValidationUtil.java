@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.util;
 
 
 import org.springframework.core.NestedExceptionUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.HasId;
@@ -16,6 +15,10 @@ import java.util.stream.Collectors;
 public class ValidationUtil {
 
     private static final Validator validator;
+
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exist";
+
+    public static final String EXCEPTION_DUPLICATE_DATETIME = "Meal with this Date and Time already exist";
 
     static {
         //  From Javadoc: implementations are thread-safe and instances are typically cached and reused.
@@ -77,11 +80,9 @@ public class ValidationUtil {
         return rootCause != null ? rootCause : t;
     }
 
-    public static ResponseEntity<String> getErrorResponse(BindingResult result) {
-        return ResponseEntity.unprocessableEntity().body(
-                result.getFieldErrors().stream()
-                        .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                        .collect(Collectors.joining("<br>"))
-        );
+    public static String getErrorResponse(BindingResult result) {
+        return result.getFieldErrors().stream()
+                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
+                .collect(Collectors.joining("<br>"));
     }
 }

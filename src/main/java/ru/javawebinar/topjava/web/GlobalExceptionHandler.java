@@ -12,6 +12,8 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.EXCEPTION_DUPLICATE_EMAIL;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -20,10 +22,11 @@ public class GlobalExceptionHandler {
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         log.error("Exception at request " + req.getRequestURL(), e);
         Throwable rootCause = ValidationUtil.getRootCause(e);
+        String message = rootCause.getMessage().contains("users_unique_email_idx") ? EXCEPTION_DUPLICATE_EMAIL : rootCause.toString();
 
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ModelAndView mav = new ModelAndView("exception",
-                Map.of("exception", rootCause, "message", rootCause.toString(), "status", httpStatus));
+                Map.of("exception", rootCause, "message", message, "status", httpStatus));
         mav.setStatus(httpStatus);
 
         // Interceptor is not invoked, put userTo
