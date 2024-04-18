@@ -89,6 +89,8 @@ $(function () {
         }
     });
 
+    $.datetimepicker.setLocale(localeCode);
+
     var startTime = $('#startTime');
     var endTime = $('#endTime');
     startTime.datetimepicker({

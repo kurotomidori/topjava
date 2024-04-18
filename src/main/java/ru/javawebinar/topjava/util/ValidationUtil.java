@@ -3,22 +3,21 @@ package ru.javawebinar.topjava.util;
 
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindException;
 import ru.javawebinar.topjava.HasId;
 import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.*;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ValidationUtil {
 
     private static final Validator validator;
 
-    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exist";
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
 
-    public static final String EXCEPTION_DUPLICATE_DATETIME = "Meal with this Date and Time already exist";
+    public static final String EXCEPTION_DUPLICATE_DATETIME = "exception.meal.duplicateDateTime";
 
     static {
         //  From Javadoc: implementations are thread-safe and instances are typically cached and reused.
@@ -80,9 +79,13 @@ public class ValidationUtil {
         return rootCause != null ? rootCause : t;
     }
 
-    public static String getErrorResponse(BindingResult result) {
-        return result.getFieldErrors().stream()
+    public static String[] getErrorMessages(BindException e) {
+        return e.getBindingResult().getFieldErrors().stream()
                 .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                .collect(Collectors.joining("<br>"));
+                .toArray(String[]::new);
+    }
+
+    public static String getMessage(Throwable e) {
+        return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
     }
 }

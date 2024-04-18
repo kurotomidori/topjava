@@ -1,19 +1,20 @@
 package ru.javawebinar.topjava.util.exception;
 
 import java.beans.ConstructorProperties;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ErrorInfo {
     private final String url;
 
     private final ErrorType type;
-    private final String detail;
+    private final String[] details;
 
     @ConstructorProperties({"url", "type", "detail"})
-    public ErrorInfo(CharSequence url, ErrorType type, String detail) {
+    public ErrorInfo(CharSequence url, ErrorType type, String... details) {
         this.url = url.toString();
         this.type = type;
-        this.detail = detail;
+        this.details = details;
     }
 
     public String getUrl() {
@@ -24,8 +25,8 @@ public class ErrorInfo {
         return type;
     }
 
-    public String getDetail() {
-        return detail;
+    public String[] getDetails() {
+        return details;
     }
 
     @Override
@@ -33,11 +34,13 @@ public class ErrorInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ErrorInfo errorInfo = (ErrorInfo) o;
-        return Objects.equals(url, errorInfo.url) && type == errorInfo.type && Objects.equals(detail, errorInfo.detail);
+        return Objects.equals(url, errorInfo.url) && type == errorInfo.type && Arrays.equals(details, errorInfo.details);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(url, type, detail);
+        int result = Objects.hash(url, type);
+        result = 31 * result + Arrays.hashCode(details);
+        return result;
     }
 }

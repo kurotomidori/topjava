@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     @GetMapping
@@ -40,7 +45,9 @@ public class AdminUIController extends AbstractUserController {
         } else {
             super.update(userTo, userTo.id());
         }
+
     }
+
 
     @Override
     @PostMapping("/{id}")

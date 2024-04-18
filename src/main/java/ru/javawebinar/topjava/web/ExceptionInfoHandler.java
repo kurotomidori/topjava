@@ -2,21 +2,19 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.ErrorInfo;
 import ru.javawebinar.topjava.util.exception.ErrorType;
-import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +34,12 @@ public class ExceptionInfoHandler {
             "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
             "meal_unique_user_datetime_idx", EXCEPTION_DUPLICATE_DATETIME);
 
+    private final MessageSourceAccessor messageSourceAccessor;
+
+    public ExceptionInfoHandler(MessageSourceAccessor messageSourceAccessor) {
+        this.messageSourceAccessor = messageSourceAccessor;
+    }
+
     //  http://stackoverflow.com/a/22358422/548473
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(NotFoundException.class)
@@ -51,7 +55,8 @@ public class ExceptionInfoHandler {
             String lowerCaseMsg = rootMsg.toLowerCase();
             for (Map.Entry<String, String> entry : CONSTRAINS_I18N_MAP.entrySet()) {
                 if (lowerCaseMsg.contains(entry.getKey())) {
-                    return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR, entry.getValue());
+                    return logAndGetErrorInfo(req, e, true,
+                            VALIDATION_ERROR, messageSourceAccessor.getMessage(entry.getValue()));
                 }
             }
         }
@@ -59,10 +64,10 @@ public class ExceptionInfoHandler {
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
-    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class,
-            HttpMessageNotReadableException.class, BindException.class})
-    public ErrorInfo validationError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
+    @ExceptionHandler({BindException.class})
+    public ErrorInfo validationError(HttpServletRequest req, BindException e) {
+        String[] messages = ValidationUtil.getErrorMessages(e);
+        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, messages);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -72,20 +77,14 @@ public class ExceptionInfoHandler {
     }
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String... message) {
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType, String... details) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(errorType + " at request " + req.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        String details;
-        if(message.length != 0) {
-            details = message[0];
-        } else {
-            details = rootCause instanceof BindException ?
-                    ValidationUtil.getErrorResponse(((BindException) rootCause).getBindingResult()) : rootCause.toString();
-        }
-        return new ErrorInfo(req.getRequestURL(), errorType, details);
+        return new ErrorInfo(req.getRequestURL(),
+                errorType, details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)});
     }
 }
